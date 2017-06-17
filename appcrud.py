@@ -55,7 +55,7 @@ def get_users():
 	response = requests.get(url, headers=headers, verify=False)
 	return response.text
 
-@app.route('rackHD/users/update', methods=['DELETE','POST'])
+@app.route('/users/update', methods=['DELETE','POST'])
 def update_users():
 
         username = request.json['username']
