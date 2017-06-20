@@ -1,8 +1,38 @@
 #!flask/bin/python
-from flask import Flask,jsonify,request,abort
-import requests
+from flask import Flask,jsonify,request,abort,make_response,url_for
+import requests, json
 
+from flask_httpauth import HTTPBasicAuth
+
+auth = HTTPBasicAuth()
 app = Flask(__name__)
+
+@auth.get_password
+def get_password(username):
+	if username == 'admin':
+		return 'hi'
+	return None
+
+@auth.error_handler
+def unauthorized():
+	return make_response(jsonify({'error': 'Unauthorized Access'}), 401)
+
+@app.errorhandler(400)
+def bad_request(error):
+	return make_response(jsonify({'error':'Bad Request'}), 400)
+
+@app.errorhandler(404)
+def not_found(error):
+	return make_response(jsonify({'error':'Not Found'}), 404)
+
+@app.errorhandler(405)
+def method_not_allowed(error):
+	return make_response(jsonify({'error':'Method Not Allowed'}), 405)
+
+@app.route('/')
+@auth.login_required
+def index():
+	return "Hello, %s!" % auth.username()
 
 @app.route('/users/login', methods=['POST'])
 def users_login():
@@ -36,7 +66,7 @@ def create_users():
 
 	headers = {
                 "Content-Type": "application/json",
-		"Authorization": "JWT eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyIjoiYWRtaW4iLCJpYXQiOjE0OTc2Nzg2NzcsImV4cCI6MTQ5Nzc2NTA3N30.OXDDuxmDCUUOtgxrIV0CGRJ0YMXkIcONXxQNL3IdAvk"
+		"Authorization": "JWT eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyIjoiYWRtaW4iLCJpYXQiOjE0OTc5NDM2MTksImV4cCI6MTQ5ODAzMDAxOX0.NzjGL4hgvchyvQw3ORQ4AQiTlcmRKmnLz4oz-SBCLJI"
 	}
 
         response = requests.post(url, headers=headers, data=payload, verify=False)
@@ -49,7 +79,7 @@ def get_users():
 
 	headers = {
                 "Content-Type": "application/json",
-		"Authorization": "JWT eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyIjoiYWRtaW4iLCJpYXQiOjE0OTc2Nzg2NzcsImV4cCI6MTQ5Nzc2NTA3N30.OXDDuxmDCUUOtgxrIV0CGRJ0YMXkIcONXxQNL3IdAvk"
+		"Authorization": "JWT eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyIjoiYWRtaW4iLCJpYXQiOjE0OTc5NDM2MTksImV4cCI6MTQ5ODAzMDAxOX0.NzjGL4hgvchyvQw3ORQ4AQiTlcmRKmnLz4oz-SBCLJI"
 	}
 	
 	response = requests.get(url, headers=headers, verify=False)
@@ -63,7 +93,7 @@ def update_users():
 
         headers = {
                 "Content-Type": "application/json",
-                "Authorization": "JWT eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyIjoiYWRtaW4iLCJpYXQiOjE0OTc2Nzg2NzcsImV4cCI6MTQ5Nzc2NTA3N30.OXDDuxmDCUUOtgxrIV0CGRJ0YMXkIcONXxQNL3IdAvk"
+                "Authorization": "JWT eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyIjoiYWRtaW4iLCJpYXQiOjE0OTc5NDM2MTksImV4cCI6MTQ5ODAzMDAxOX0.NzjGL4hgvchyvQw3ORQ4AQiTlcmRKmnLz4oz-SBCLJI"
         }
 
         responsedel = requests.delete(url, headers=headers, verify=False)
@@ -88,7 +118,7 @@ def del_users():
 
         headers = {
                 "Content-Type": "application/json",
-                "Authorization": "JWT eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyIjoiYWRtaW4iLCJpYXQiOjE0OTc2Nzg2NzcsImV4cCI6MTQ5Nzc2NTA3N30.OXDDuxmDCUUOtgxrIV0CGRJ0YMXkIcONXxQNL3IdAvk"
+                "Authorization": "JWT eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyIjoiYWRtaW4iLCJpYXQiOjE0OTc5NDM2MTksImV4cCI6MTQ5ODAzMDAxOX0.NzjGL4hgvchyvQw3ORQ4AQiTlcmRKmnLz4oz-SBCLJI"
         }
 
         response = requests.delete(url, headers=headers, verify=False)
