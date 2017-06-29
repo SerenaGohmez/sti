@@ -1,0 +1,22 @@
+FLASK CURLS
+
+curl -k -X POST -H "Content-Type:application/json" https://localhost:8443/login -d '{"username":"admin", "password":"admin123", "role": "Administrator" }'
+
+LOGIN
+curl http://localhost:5000/users/login -X POST -H "Content-Type:application/json" -d '{"username":"admin", "password":"admin123", "role": "Administrator" }'
+
+
+CREATE
+curl http://localhost:5000/users/create -H "Content-Type: application/json" -X POST -d '{"username":"NewUser4", "password":"12345678", "role":"ReadOnly"}'
+
+
+READ
+curl http://localhost:5000/users/read | python -m json.tool
+
+
+UPDATE
+curl http://localhost:5000/users/update -X DELETE -H "Content-Type:application/json" -d '{"username":"usertest2", "password":"password12345", "role": "Administrator" }'
+
+
+DELETE
+curl -i http://localhost:5000/users/delete -X DELETE -H "Content-Type:application/json" -d '{"username":"testuser00"}'
