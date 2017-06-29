@@ -1,0 +1,265 @@
+swagger: '2.0'
+host: localhost:5000
+basePath: /rackhd/
+#schemes: 
+#- http
+
+info:
+  description: |
+    This is a RackHD API Documentaion. The actual .py script can be found at GitHub 
+    [https://github.com/SerenaGohmez/sti/blob/master/appcrud.py].
+    
+    For all curl commands, please manually incorporate the command below with the curl command shown in Swagger
+    "-H Token: *Your token code after login without the 'JWT' at the front*"
+    
+    For all curl commands' flask authorization, please manually incorporate the command below with the curl command shown in Swagger
+    "-u admin:flask"
+    
+  version: 1.0.0
+  title: Swagger RackHD Accounts
+  termsOfService: http://swagger.io/terms/
+  contact: 
+    email: 
+
+  license:
+    name: SERENA
+    url: 
+# host: petstore.swagger.io
+# basePath: /v2
+tags:
+- name: Serena RackHD Accounts
+  description: CRUD for Accounts
+
+paths:
+  /users/login:
+    get:
+      tags:
+      - Serena RackHD Accounts
+      summary: Login
+      description: |
+        Enter the admin credentials to get the authentication token.
+        security:
+        - basicAuth: [] #HTTP AUTH
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: credentials
+        description: Enter admin username, password and role.
+        required: true
+        schema: 
+          $ref: '#/definitions/users_login'
+          
+      responses:
+        200:
+          description: OK
+        400:
+          description: invalid input, object invalid
+        405:
+          description: method not allowed
+
+  /users/create:
+    put:
+      tags:
+      - Serena RackHD Accounts
+      summary: Adding a new Account       
+      operationId: /users/create
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - in: body
+        name: body
+        description: Information of Accounts must be input accordingly, some of the roles include Administrators, Read-Only and Operator etc.
+        required: true
+        schema:
+          $ref: '#/definitions/create_users'
+      responses:
+        200:
+          description: Successful Operation
+        400:
+          description: Bad Request
+        401:
+          description: Unauthorized Access
+        404:
+          description: Operation Not Found
+        405:
+          description: Method Not Allowed
+      security:
+      - flask: [admin:flask]
+  /users/read:
+    get:
+      tags:
+      - Serena RackHD Accounts
+      summary: Read information on Accounts
+      operationId: users/read
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - in: body
+        name: body
+        description: Information of Accounts must be set for specific Accounts, else, ignore.
+        required: true
+        schema:
+          $ref: '#/definitions/get_users'
+      responses:
+        200:
+          description: Successful Operation
+        400:
+          description: Bad Request
+        401:
+          description: Unauthorized Access
+        404:
+          description: Operation Not Found
+        405:
+          description: Method Not Allowed
+      security:
+      - flask: [admin:flask]
+  /users/update:
+    patch:
+      tags:
+      - Serena RackHD Accounts
+      summary: Update information on Accounts
+      operationId: users/update
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - in: body
+        name: body
+        description: Information of Accounts must be input accordingly, some of the roles include Administrators, Read-Only and Operator etc.
+        required: true
+        schema:
+          $ref: '#/definitions/update_users'
+      responses:
+        200:
+          description: Successful Operation
+        400:
+          description: Bad Request
+        401:
+          description: Unauthorized Access
+        404:
+          description: Operation Not Found
+        405:
+          description: Method Not Allowed
+      security:
+      - flask: [admin:flask]
+  /users/delete:
+    delete:
+      tags:
+      - Serena RackHD Accounts
+      summary: Delete an Account
+      operationId: users/delete
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - in: body
+        name: body
+        description: The user must be an exsiting user.
+        required: true
+        schema:
+          $ref: '#/definitions/del_users'
+      responses:
+        200:
+          description: Successful Operation
+        400:
+          description: Bad Request
+        401:
+          description: Unauthorized Access
+        404:
+          description: Operation Not Found
+        405:
+          description: Method Not Allowed
+      security:
+      - flask: [admin:flask]
+
+securityDefinitions:
+  flask:
+    type: basic
+
+definitions:
+  users_login:
+    type: object
+    required:
+    - username
+    - password
+    - role
+    properties:
+      username:
+        type: string
+        example: "admin"
+      password:
+        type: string
+        example: "admin"
+      role:
+        type: string
+        example: "Administrator"
+  create_users:
+    type: object
+    required:
+    - username
+    - password
+    - role
+    properties:
+      username:
+        type: string
+        example: "admin"
+      password:
+        type: string
+        example: "admin"
+      role:
+        type: string
+        example: "Administrator"
+  get_users:
+    type: object
+  update_users:
+    type: object
+    required:
+    - username
+    - password
+    - role
+    properties:
+      username:
+        type: string
+        example: "testuser1"
+      password:
+        type: string
+        example: "password123"
+      role:
+        type: string
+        example: "Operator"
+  del_users:
+    type: object
+    required:
+    - username
+    properties:
+      username:
+        type: string
+        example: "testuser1"
+
+externalDocs:
+  description: Find out more about Swagger
+  url: http://swagger.io
+# Added by API Auto Mocking Plugin
+# host: localhost:5000
+# basePath: /todo-api
+# schemes:
+#  - http
+# Added by API Auto Mocking Plugin
+schemes:
+ - https
+ - http
